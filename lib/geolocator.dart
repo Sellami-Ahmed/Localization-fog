@@ -5,8 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localization_client/api.dart';
 
 class HomePage extends StatefulWidget {
-  final String name;
-  const HomePage({Key? key, required this.name}) : super(key: key);
+  final int id;
+  const HomePage({Key? key, required this.id}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
           getUserCurrentLocation().then((value) async {
             print(value.latitude.toString() + " " + value.longitude.toString());
             await addOrUpdateMarkers(
-                widget.name, value.longitude, value.latitude);
+                widget.id, value.longitude, value.latitude);
             _markers = await fetchMarkers();
 
             CameraPosition cameraPosition = new CameraPosition(
