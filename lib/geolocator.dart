@@ -57,7 +57,8 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           getUserCurrentLocation().then((value) async {
             print(value.latitude.toString() + " " + value.longitude.toString());
-
+            await addOrUpdateMarkers(
+                widget.name, value.longitude, value.latitude);
             _markers = await fetchMarkers();
 
             CameraPosition cameraPosition = new CameraPosition(

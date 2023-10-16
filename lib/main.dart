@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:localization_client/geolocator.dart';
 import 'package:localization_client/login.dart';
 
 void main() {
@@ -14,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       // on below line we are specifying title of our app
-      title: 'GFG',
+      title: 'Fog',
       // on below line we are hiding debug banner
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
