@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:localization_client/geolocator.dart';
+import 'package:localization_client/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.green,
       ),
       // First screen of our app
-      home: const HomePage(),
+      home: const LoginPage(),
     );
   }
 }
