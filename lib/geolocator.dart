@@ -2,11 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:localization_client/api.dart';
 
 class HomePage extends StatefulWidget {
-  final int id;
-  const HomePage({Key? key, required this.id}) : super(key: key);
+  final String name;
+  const HomePage({Key? key, required this.name}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -20,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     zoom: 14.4746,
   );
 
-  List<Marker> _markers = <Marker>[];
+  final List<Marker> _markers = <Marker>[];
 
   Future<Position> getUserCurrentLocation() async {
     await Geolocator.requestPermission()
@@ -57,9 +56,14 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           getUserCurrentLocation().then((value) async {
             print(value.latitude.toString() + " " + value.longitude.toString());
-            await addOrUpdateMarkers(
-                widget.id, value.longitude, value.latitude);
-            _markers = await fetchMarkers();
+
+            _markers.add(Marker(
+              markerId: MarkerId("${widget.name}"),
+              position: LatLng(value.latitude, value.longitude),
+              infoWindow: InfoWindow(
+                title: widget.name,
+              ),
+            ));
 
             CameraPosition cameraPosition = new CameraPosition(
               target: LatLng(value.latitude, value.longitude),

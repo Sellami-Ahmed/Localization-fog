@@ -1,75 +1,92 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:localization_client/geolocator.dart';
+import 'package:localization_client/signup.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
-
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  _LoginPageState createState() => _LoginPageState();
+}
+
+void _navigateToSignup(BuildContext context) {
+  // Navigate to the signup page.
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => SignupPage()));
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
-  final TextEditingController _fullNameController = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFF0F9D58),
-        title: Text("Login"),
-      ),
-      body: Column(
-        children: [
-          Form(
-            key: _formKey,
-            child: TextFormField(
-              controller: _fullNameController,
-              validator: (val) => val!.isEmpty ? "could not be empty" : null,
-              decoration: const InputDecoration(
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
-                prefixIcon: Icon(Icons.account_circle),
-                border: OutlineInputBorder(),
-                hintText: "userName",
-                labelText: "userName",
-              ),
-            ),
-          ),
-          CupertinoButton(
-            color: Theme.of(context).primaryColor,
-            onPressed: () {
-              onSave(context);
-            },
-            child: const Text("enter"),
-          )
-        ],
-      ),
-    );
-  }
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
-  onSave(BuildContext context) {
-    bool allValid = true;
-    //If any form validation function returns false means all forms are not valid
+  void _login() {
+    // Implement your login logic here
+    String username = _usernameController.text;
+    String password = _passwordController.text;
 
-    allValid = validate();
-
-    if (allValid) {
+    // Add your authentication logic, for example, comparing the username and password with a database.
+    if (username == 'user' && password == 'password') {
+      // Successful login, navigate to another page.
       Navigator.pushAndRemoveUntil<dynamic>(
         context,
         MaterialPageRoute<dynamic>(
           builder: (BuildContext context) =>
-              HomePage(name: _fullNameController.text.toString()),
+              HomePage(name: _usernameController.text.toString()),
         ),
         (route) => false, //if you want to disable back feature set to false
       );
     } else {
-      debugPrint("Form is Not Valid");
+      // Show an error message if login fails.
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login failed. Please check your credentials.'),
+        ),
+      );
     }
   }
 
-  bool validate() {
-    //Validate Form Fields by form key
-    bool validate = _formKey.currentState!.validate();
-    return validate;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login Page'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                  labelText: 'Username',
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                ),
+              ),
+            ),
+            Column(
+              children: [
+                ElevatedButton(
+                  onPressed: _login,
+                  child: Text('Login'),
+                ),
+                ElevatedButton(
+                    onPressed: () => _navigateToSignup(context),
+                    child: Text("sign up"))
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
