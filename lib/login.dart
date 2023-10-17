@@ -6,26 +6,30 @@ import 'package:localization_client/geolocator.dart';
 import 'package:localization_client/signup.dart';
 
 class LoginPage extends StatefulWidget {
+  final String serverAddr;
+
+  const LoginPage({super.key, required this.serverAddr});
   @override
   _LoginPageState createState() => _LoginPageState();
-}
-
-void _navigateToSignup(BuildContext context) {
-  // Navigate to the signup page.
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => SignupPage()));
 }
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  void _navigateToSignup(BuildContext context) {
+    // Navigate to the signup page.
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => SignupPage(serverAddr: widget.serverAddr)));
+  }
 
   void _login() async {
     // Implement your login logic here
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    var response = await signIn(username, password);
+    var response = await signIn(username, password, widget.serverAddr);
 
     if (response.statusCode == 200) {
       final responseJson = jsonDecode(response.body);
@@ -36,6 +40,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (BuildContext context) => HomePage(
               name: username,
               id: responseJson["id"],
+              serverAddr: widget.serverAddr,
             ),
           ),
           (route) => false, //if you want to disable back feature set to false

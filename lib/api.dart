@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
-String addressHost = "192.168.112.229:8080";
 Future<http.Response> addOrUpdateMarkers(
-    int id, double longitude, double latitude) {
+    int id, double longitude, double latitude, String addressHost) {
   return http.put(
     Uri.parse('http://$addressHost/api/v1/devices'),
     headers: <String, String>{
@@ -18,7 +17,7 @@ Future<http.Response> addOrUpdateMarkers(
   );
 }
 
-Future<http.Response> signIn(String name, String password) {
+Future<http.Response> signIn(String name, String password, String addressHost) {
   return http.post(
     Uri.parse('http://$addressHost/api/v1/devices/login'),
     headers: <String, String>{
@@ -28,7 +27,7 @@ Future<http.Response> signIn(String name, String password) {
   );
 }
 
-Future<http.Response> signUp(String name, String password) {
+Future<http.Response> signUp(String name, String password, String addressHost) {
   return http.post(
     Uri.parse('http://$addressHost/api/v1/devices/register'),
     headers: <String, String>{
@@ -38,7 +37,7 @@ Future<http.Response> signUp(String name, String password) {
   );
 }
 
-Future<List<Marker>> fetchMarkers() async {
+Future<List<Marker>> fetchMarkers(String addressHost) async {
   final response =
       await http.get(Uri.parse('http://$addressHost/api/v1/devices'));
 

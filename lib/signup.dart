@@ -7,6 +7,9 @@ import 'package:localization_client/api.dart';
 import 'package:localization_client/login.dart';
 
 class SignupPage extends StatefulWidget {
+  final String serverAddr;
+  const SignupPage({super.key, required this.serverAddr});
+
   @override
   _SignupPageState createState() => _SignupPageState();
 }
@@ -28,7 +31,7 @@ class _SignupPageState extends State<SignupPage> {
     if (newPassword == confirmPassword) {
       // Passwords match, proceed with signup.
       _passwordErrorText = '';
-      var response = await signUp(newUsername, newPassword);
+      var response = await signUp(newUsername, newPassword, widget.serverAddr);
       print(response.statusCode);
       if (response.statusCode == 201) {
         final responseJson = jsonDecode(response.body);
@@ -36,7 +39,8 @@ class _SignupPageState extends State<SignupPage> {
           Navigator.pushAndRemoveUntil<dynamic>(
             context,
             MaterialPageRoute<dynamic>(
-              builder: (BuildContext context) => LoginPage(),
+              builder: (BuildContext context) =>
+                  LoginPage(serverAddr: widget.serverAddr),
             ),
             (route) => false, //if you want to disable back feature set to false
           );

@@ -6,9 +6,14 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localization_client/api.dart';
 
 class HomePage extends StatefulWidget {
+  final String serverAddr;
   final String name;
   final int id;
-  const HomePage({Key? key, required this.name, required this.id})
+  const HomePage(
+      {Key? key,
+      required this.name,
+      required this.id,
+      required this.serverAddr})
       : super(key: key);
 
   @override
@@ -60,10 +65,11 @@ class _HomePageState extends State<HomePage> {
         onPressed: () async {
           getUserCurrentLocation().then((value) async {
             print(value.latitude.toString() + " " + value.longitude.toString());
-            addOrUpdateMarkers(widget.id, value.longitude, value.latitude)
+            addOrUpdateMarkers(widget.id, value.longitude, value.latitude,
+                    widget.serverAddr)
                 .then((response) async {
               if (jsonDecode(response.body) != null) {
-                _markers = await fetchMarkers();
+                _markers = await fetchMarkers(widget.serverAddr);
               }
             });
 
