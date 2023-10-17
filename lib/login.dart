@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:localization_client/api.dart';
 import 'package:localization_client/geolocator.dart';
 import 'package:localization_client/signup.dart';
 
@@ -18,29 +20,32 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
+  void _login() async {
     // Implement your login logic here
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    // Add your authentication logic, for example, comparing the username and password with a database.
-    if (username == 'user' && password == 'password') {
-      // Successful login, navigate to another page.
-      Navigator.pushAndRemoveUntil<dynamic>(
-        context,
-        MaterialPageRoute<dynamic>(
-          builder: (BuildContext context) =>
-              HomePage(name: _usernameController.text.toString()),
-        ),
-        (route) => false, //if you want to disable back feature set to false
-      );
+    var response = await signIn(username, password);
+
+    if (response.statusCode == 200) {
+      final responseJson = jsonDecode(response.body);
+      if (responseJson != null) {
+        Navigator.pushAndRemoveUntil<dynamic>(
+          context,
+          MaterialPageRoute<dynamic>(
+            builder: (BuildContext context) => HomePage(
+              name: username,
+              id: responseJson["id"],
+            ),
+          ),
+          (route) => false, //if you want to disable back feature set to false
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text('Login failed. Please check your credentials.')));
+      }
     } else {
-      // Show an error message if login fails.
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Login failed. Please check your credentials.'),
-        ),
-      );
+      throw Exception('uncorrect login information');
     }
   }
 

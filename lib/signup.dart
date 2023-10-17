@@ -1,6 +1,10 @@
 // signup.dart
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:localization_client/api.dart';
+import 'package:localization_client/login.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -14,7 +18,7 @@ class _SignupPageState extends State<SignupPage> {
       TextEditingController();
   String _passwordErrorText = '';
 
-  void _signup() {
+  void _signup() async {
     // Implement your signup logic here
     String newUsername = _newUsernameController.text;
     String newPassword = _newPasswordController.text;
@@ -24,6 +28,27 @@ class _SignupPageState extends State<SignupPage> {
     if (newPassword == confirmPassword) {
       // Passwords match, proceed with signup.
       _passwordErrorText = '';
+      var response = await signUp(newUsername, newPassword);
+      print(response.statusCode);
+      if (response.statusCode == 201) {
+        final responseJson = jsonDecode(response.body);
+        if (responseJson != null) {
+          Navigator.pushAndRemoveUntil<dynamic>(
+            context,
+            MaterialPageRoute<dynamic>(
+              builder: (BuildContext context) => LoginPage(),
+            ),
+            (route) => false, //if you want to disable back feature set to false
+          );
+          ScaffoldMessenger.of(context)
+              .showSnackBar(SnackBar(content: Text('Account Created')));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Login failed. Please check your credentials.')));
+        }
+      } else {
+        throw Exception('uncorrect login information');
+      }
 
       // Add your registration logic, for example, storing the user's information in a database.
 
